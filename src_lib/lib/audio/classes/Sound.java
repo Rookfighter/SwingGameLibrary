@@ -19,7 +19,6 @@ public class Sound implements ISound{
 	private File audioFile;
 	private Clip audioClip;
 	private boolean repeat;
-	private AudioInputStream audioStream;
 	
 	public Sound(final String p_path)
 	{
@@ -42,7 +41,7 @@ public class Sound implements ISound{
 	@Override
 	public void load() throws UnsupportedAudioFileException, IOException, LineUnavailableException
 	{
-		audioStream = AudioSystem.getAudioInputStream(audioFile);
+		AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
 		DataLine.Info lineInfo = new DataLine.Info(Clip.class, audioStream.getFormat());
 		audioClip = (Clip) AudioSystem.getLine(lineInfo);
 		audioClip.addLineListener(getRepeatListener());
@@ -91,8 +90,8 @@ public class Sound implements ISound{
 	{
 		return new LineListener() {
 		      public void update(LineEvent event) {
-		        if (event.getType() == LineEvent.Type.STOP && repeat) {
-		          start();
+		        if (event.getType() == LineEvent.Type.STOP) {
+		          audioClip.close();
 		        }
 		      }
 		    };

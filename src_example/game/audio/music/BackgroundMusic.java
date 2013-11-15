@@ -4,7 +4,7 @@ import lib.audio.classes.Sound;
 
 public class BackgroundMusic extends Sound{
 
-	private static BackgroundMusic instance = null;
+	private static BackgroundMusic backgroundMusic = null;
 	
 	private BackgroundMusic()
 	{
@@ -14,9 +14,9 @@ public class BackgroundMusic extends Sound{
 	
 	public static BackgroundMusic getInstance()
 	{
-		if(instance == null);
-			instance = new BackgroundMusic();
-		return instance;
+		if(backgroundMusic == null)
+			backgroundMusic = new BackgroundMusic();
+		return backgroundMusic;
 	}
 	
 }

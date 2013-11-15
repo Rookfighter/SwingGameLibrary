@@ -2,6 +2,7 @@ package game.app;
 
 import lib.graphics.frame.GameFrame;
 import game.app.factories.GameFactory;
+import game.audio.music.BackgroundMusic;
 import game.audio.music.SoundLoader;
 import game.view.sprites.GameSpriteSheetLoader;
 
@@ -43,5 +44,6 @@ public final class Application {
 		gameFrame.setSoundLoader(new SoundLoader());
 		gameFrame.loadSpriteSheets();
 		gameFrame.loadSounds();
+		BackgroundMusic.getInstance().start();
 	}
 }
