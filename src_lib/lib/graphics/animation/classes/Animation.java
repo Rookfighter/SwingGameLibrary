@@ -191,7 +191,20 @@ public class Animation implements IAnimation {
 		setSpriteDimensions();
 		animationContainer.calculateTime();
 	}
-	
+
+	@Override
+	public void rotate(double p_radian)
+	{
+		for(int i = 0; i < animationContainer.size(); ++i)
+			animationContainer.getSpriteOf(i).rotate(p_radian);
+		
+	}
+
+	@Override
+	public double getRotation()
+	{
+		return animationContainer.getSpriteOf(0).getRotation();
+	}
 	
 
 }

@@ -11,4 +11,7 @@ public interface ISprite extends IDrawable {
 	
 	Dimension2DI getDimension();
 	void setDimension(final Dimension2DI p_dimension);
+	
+	void rotate(final double p_radian);
+	double getRotation();
 }

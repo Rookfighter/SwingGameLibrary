@@ -12,9 +12,13 @@ public interface ISound {
 	void start();
 	void stop();
 	void restart();
+	void reset();
+	void close() throws IOException;
 	
 	boolean running();
 	
 	void setRepeat(final boolean p_repeat);
 	boolean repeat();
+	
+	void closeOnEnd(final boolean p_close);
 }

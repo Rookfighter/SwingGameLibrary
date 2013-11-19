@@ -36,6 +36,10 @@ public class GameDrawListGenerator implements IDrawListGenerator {
 	
 	private Map<IGameObject,ISprite> objects;
 	
+	//TODO
+	private ISprite test;
+	private int round;
+	
 	public GameDrawListGenerator(final IFieldOfVisionController p_fov)
 	{
 		fovController = p_fov;
@@ -43,6 +47,8 @@ public class GameDrawListGenerator implements IDrawListGenerator {
 		translation = new Vector2D();
 		fovRelativeTranslation = new Vector2D();
 		objects = new HashMap<IGameObject,ISprite>();
+		
+		round = 0;
 	}
 	
 	public void setFieldOfVision(final IFieldOfVisionController p_fieldOfVision)
@@ -60,8 +66,25 @@ public class GameDrawListGenerator implements IDrawListGenerator {
 	{
 		drawList = new LinkedList<IDrawable>();
 		generateDrawListFromFoV();
+		addTest();
 		Collections.sort(drawList, comparator);
 		return drawList;
+	}
+	
+	private void addTest()
+	{
+		if(test == null)
+		{
+			test = new SpriteUnknown();
+			test.getPosition().set(100,100);
+		}
+		round++;
+		if(round >= 10)
+		{
+			test.rotate(Math.toRadians(30));
+			round = 0;
+		}
+		drawList.add(test);
 	}
 	
 	private void generateDrawListFromFoV()

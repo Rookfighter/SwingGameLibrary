@@ -18,7 +18,9 @@ public class Sound implements ISound{
 
 	private File audioFile;
 	private Clip audioClip;
+	private AudioInputStream audioStream;
 	private boolean repeat;
+	private boolean closeOnEnd;
 	
 	public Sound(final String p_path)
 	{
@@ -41,10 +43,10 @@ public class Sound implements ISound{
 	@Override
 	public void load() throws UnsupportedAudioFileException, IOException, LineUnavailableException
 	{
-		AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+		audioStream = AudioSystem.getAudioInputStream(audioFile);
 		DataLine.Info lineInfo = new DataLine.Info(Clip.class, audioStream.getFormat());
 		audioClip = (Clip) AudioSystem.getLine(lineInfo);
-		audioClip.addLineListener(getRepeatListener());
+		audioClip.addLineListener(getStopListener());
 		audioClip.open(audioStream);
 	}
 
@@ -63,8 +65,7 @@ public class Sound implements ISound{
 	@Override
 	public void restart()
 	{
-		if(running())
-			stop();
+		reset();
 		start();
 	}
 
@@ -78,6 +79,8 @@ public class Sound implements ISound{
 	public void setRepeat(boolean p_repeat)
 	{
 		repeat = p_repeat;
+		if(repeat)
+			closeOnEnd = false;
 	}
 
 	@Override
@@ -86,15 +89,64 @@ public class Sound implements ISound{
 		return repeat;
 	}
 	
-	private LineListener getRepeatListener()
+	private LineListener getStopListener()
 	{
-		return new LineListener() {
-		      public void update(LineEvent event) {
-		        if (event.getType() == LineEvent.Type.STOP) {
-		          audioClip.close();
-		        }
-		      }
-		    };
+		return new StopListener();
+	}
+
+	@Override
+	public void reset()
+	{
+		if(running())
+			stop();
+		audioClip.setFramePosition(0);
+	}
+
+	@Override
+	public void close() throws IOException
+	{
+		audioClip.close();
+		audioStream.close();
+	}
+
+	@Override
+	public void closeOnEnd(boolean p_close)
+	{
+		closeOnEnd = p_close;
+		if(closeOnEnd)
+			repeat = false;
+	}
+	
+	private class StopListener implements LineListener
+	{
+
+		@Override
+		public void update(LineEvent event)
+		{
+			if (event.getType() == LineEvent.Type.STOP)
+			{
+				try
+				{
+					onStop();
+				} catch (IOException e)
+				{
+					//TODO
+					e.printStackTrace();
+				}
+		    }
+			
+		}
+		
+		private void onStop() throws IOException
+		{
+			if(repeat)
+				restart();
+			else if (closeOnEnd)
+				close();
+			else
+				reset();
+		}
+		
 	}
 	
 	

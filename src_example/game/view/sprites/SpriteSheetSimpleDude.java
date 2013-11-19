@@ -1,6 +1,6 @@
 package game.view.sprites;
 
-import lib.graphics.sprites.SpriteSheet;
+import lib.graphics.sprites.classes.SpriteSheet;
 import lib.utils.integer.Dimension2DI;
 
 public class SpriteSheetSimpleDude extends SpriteSheet {
