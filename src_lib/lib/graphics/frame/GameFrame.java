@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import lib.audio.ISoundLoader;
+import lib.graphics.panel.GamePanel;
 import lib.graphics.sprites.ISpriteSheetLoader;
 import lib.utils.integer.Dimension2DI;
 
@@ -20,12 +21,30 @@ public class GameFrame extends JFrame {
 	
 	private ISpriteSheetLoader spriteSheetLoader;
 	private ISoundLoader soundLoader;
+	private GamePanel gamePanel;
 	
 	private boolean fullscreen;
 	
 	public GameFrame()
 	{
 		setResizable(false);
+	}
+	
+	public void setGamePanel(final GamePanel p_gamePanel)
+	{
+		remove(gamePanel);
+		gamePanel = p_gamePanel;
+		add(gamePanel);
+	}
+	
+	
+	public void render()
+	{
+		RenderThread thread = new RenderThread();
+		thread.setPriority(Thread.MAX_PRIORITY);
+		thread.setBufferStrategy(getBufferStrategy());
+		thread.setGamePanel(gamePanel);
+		thread.start();
 	}
 	
 	public ISpriteSheetLoader getSpriteSheetLoader()

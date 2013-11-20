@@ -23,6 +23,7 @@ public class GamePanel extends JPanel {
 	{
 		super();
 		drawList = new LinkedList<IDrawable>();
+		setIgnoreRepaint(true);
 	}
 	
 	public void setDrawList(final List<IDrawable> p_drawList)
@@ -62,14 +63,17 @@ public class GamePanel extends JPanel {
 		return drawListGenerator;
 	}
 	
-	@Override
-	protected void paintComponent(Graphics g)
+	public void render()
 	{
-		super.paintComponent(g);
-		paintSynch(g);
+		getParent()
 	}
 	
-	private void paintSynch(final Graphics p_graphic)
+	private GameFrame getGameFrameParent()
+	{
+		return null;
+	}
+	
+	public void renderGame(final Graphics p_graphic)
 	{
 		synchronized(deltaTime)
 		{
