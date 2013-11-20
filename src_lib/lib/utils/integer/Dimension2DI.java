@@ -82,5 +82,11 @@ public class Dimension2DI {
 		return width == dim.Width() && height == dim.Height();
 	}
 	
+	@Override
+	public String toString()
+	{
+		return String.format("%dx%d", width, height);
+	}
+	
 	
 }
