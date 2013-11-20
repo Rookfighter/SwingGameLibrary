@@ -2,7 +2,6 @@ package lib.graphics.sprites;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import lib.utils.integer.Dimension2DI;
@@ -19,6 +18,10 @@ public interface ISpriteSheet {
 					final Position2DI p_position,
 					final Dimension2DI p_dimension,
 					final Graphics p_graphic);
+	void drawSprite(final int p_index,
+					final Position2DI p_position,
+					final Dimension2DI p_dimension,
+					final double p_radian,
+					final Graphics p_graphic);
 	void setInvisibleColor(final Color p_color);
-	BufferedImage getImage(final int p_idx);
 }

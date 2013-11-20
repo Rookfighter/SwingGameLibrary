@@ -193,10 +193,10 @@ public class Animation implements IAnimation {
 	}
 
 	@Override
-	public void rotate(double p_radian)
+	public void setRotation(double p_radian)
 	{
 		for(int i = 0; i < animationContainer.size(); ++i)
-			animationContainer.getSpriteOf(i).rotate(p_radian);
+			animationContainer.getSpriteOf(i).setRotation(p_radian);
 		
 	}
 

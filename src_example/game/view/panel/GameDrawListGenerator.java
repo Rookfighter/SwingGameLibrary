@@ -81,7 +81,7 @@ public class GameDrawListGenerator implements IDrawListGenerator {
 		round++;
 		if(round >= 10)
 		{
-			test.rotate(Math.toRadians(30));
+			test.setRotation(test.getRotation() + Math.toRadians(21));
 			round = 0;
 		}
 		drawList.add(test);
