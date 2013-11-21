@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import lib.audio.ISoundLoader;
+import lib.control.IKeyControl;
+import lib.control.IMouseControl;
 import lib.graphics.sprites.ISpriteSheetLoader;
 import lib.utils.integer.Dimension2DI;
 
@@ -22,6 +24,9 @@ public class GameFrame extends JFrame {
 	private ISoundLoader soundLoader;
 	
 	private boolean fullscreen;
+	
+	private IMouseControl mouseControl;
+	private IKeyControl keyControl;
 	
 	public GameFrame()
 	{
@@ -139,6 +144,48 @@ public class GameFrame extends JFrame {
 			   p_mode.getRefreshRate() == p_refreshRate &&
 			   p_mode.getWidth() == p_resolution.Width() &&
 			   p_mode.getHeight() == p_resolution.Height();
+	}
+	
+	public void setMouseControl(final IMouseControl p_mouseControl)
+	{
+		if(mouseControl != null)
+			removeMouseControls();
+		
+		mouseControl = p_mouseControl;
+		addMouseControls();
+	}
+	
+	private void removeMouseControls()
+	{
+		removeMouseListener(mouseControl.getMouseListener());
+		removeMouseMotionListener(mouseControl.getMouseMotionListener());
+		removeMouseWheelListener(mouseControl.getMouseWheelListener());
+	}
+	
+	private void addMouseControls()
+	{
+		addMouseListener(mouseControl.getMouseListener());
+		addMouseMotionListener(mouseControl.getMouseMotionListener());
+		addMouseWheelListener(mouseControl.getMouseWheelListener());
+	}
+	
+	public void setKeyControl(final IKeyControl p_keyControl)
+	{
+		if(keyControl != null)
+			removeKeyControls();
+		
+		keyControl = p_keyControl;
+		addKeyControls();
+	}
+	
+	private void removeKeyControls()
+	{
+		removeKeyListener(keyControl.getKeyListener());
+	}
+	
+	private void addKeyControls()
+	{
+		addKeyListener(keyControl.getKeyListener());
 	}
 
 }
