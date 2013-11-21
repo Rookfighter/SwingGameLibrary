@@ -93,7 +93,7 @@ public abstract class GameThread extends Thread {
 	{
 		synchronizeDeltaTimes();
 		gamePanel.generatePaintlist();
-		gamePanel.repaint();
+		gamePanel.render();
 	}
 	
 	private void synchronizeDeltaTimes()

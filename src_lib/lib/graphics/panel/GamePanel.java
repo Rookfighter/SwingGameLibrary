@@ -1,17 +1,17 @@
 package lib.graphics.panel;
 
+import java.awt.Canvas;
 import java.awt.Graphics;
 import java.util.List;
 import java.util.LinkedList;
 
-import javax.swing.JPanel;
-
 import lib.graphics.IDrawable;
+import lib.graphics.frame.RenderThread;
 import lib.utils.DeltaTime;
 import lib.utils.doubl.Dimension2DF;
 import lib.utils.integer.Dimension2DI;
 
-public class GamePanel extends JPanel {
+public class GamePanel extends Canvas {
 
 	private static final long serialVersionUID = 5656487653867749985L;
 	
@@ -23,7 +23,6 @@ public class GamePanel extends JPanel {
 	{
 		super();
 		drawList = new LinkedList<IDrawable>();
-		setIgnoreRepaint(true);
 	}
 	
 	public void setDrawList(final List<IDrawable> p_drawList)
@@ -65,16 +64,27 @@ public class GamePanel extends JPanel {
 	
 	public void render()
 	{
-		getParent()
+		setBufferStrategy();
+		startRenderThread();
 	}
 	
-	private GameFrame getGameFrameParent()
+	private void setBufferStrategy()
 	{
-		return null;
+		if(getBufferStrategy() == null)
+			createBufferStrategy(3);
+	}
+	
+	private void startRenderThread()
+	{
+		RenderThread thread = new RenderThread();
+		thread.setPriority(Thread.MAX_PRIORITY);
+		thread.setGamePanel(this);
+		thread.start();
 	}
 	
 	public void renderGame(final Graphics p_graphic)
 	{
+		clearCanvasGraphics(p_graphic);
 		synchronized(deltaTime)
 		{
 			synchronized(drawList)
@@ -82,6 +92,11 @@ public class GamePanel extends JPanel {
 				paintDrawableObjects(p_graphic);
 			}
 		}
+	}
+	
+	private void clearCanvasGraphics(final Graphics p_graphic)
+	{
+		p_graphic.clearRect(0, 0, this.getWidth(), this.getHeight());
 	}
 	
 	private void paintDrawableObjects(final Graphics p_graphic)
