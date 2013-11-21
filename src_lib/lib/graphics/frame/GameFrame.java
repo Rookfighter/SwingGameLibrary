@@ -96,7 +96,7 @@ public class GameFrame extends JFrame {
 	public boolean setResolution(final Dimension2DI p_resolution)
 	{
 		if(!fullscreen)
-			throw new IllegalArgumentException("Cannot change resolution. Application is not in fullscreen-mode.");
+			throw new IllegalStateException("Cannot change resolution. Application is not in fullscreen-mode.");
 		
 		GraphicsDevice mainScreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		if(!mainScreen.isDisplayChangeSupported())

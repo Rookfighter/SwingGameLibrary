@@ -14,6 +14,7 @@ import lib.utils.integer.Dimension2DI;
 public class GamePanel extends Canvas {
 
 	private static final long serialVersionUID = 5656487653867749985L;
+	private static final int BUFFER_COUNT = 3;
 	
 	private List<IDrawable> drawList;
 	private IDrawListGenerator drawListGenerator;
@@ -64,6 +65,9 @@ public class GamePanel extends Canvas {
 	
 	public void render()
 	{
+		if(!isDisplayable())
+			throw new IllegalStateException("GamePanel cannot be rendered. GamePanel is not displayable.");
+			
 		setBufferStrategy();
 		startRenderThread();
 	}
@@ -71,7 +75,7 @@ public class GamePanel extends Canvas {
 	private void setBufferStrategy()
 	{
 		if(getBufferStrategy() == null)
-			createBufferStrategy(3);
+			createBufferStrategy(BUFFER_COUNT);
 	}
 	
 	private void startRenderThread()
