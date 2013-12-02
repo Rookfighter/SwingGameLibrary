@@ -50,6 +50,7 @@ public class DeltaTime {
 		current = p_delta.current;
 		last = p_delta.last;
 		delta = p_delta.delta;
+		fps = p_delta.fps;
 	}
 
 }
