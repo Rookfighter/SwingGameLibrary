@@ -5,7 +5,7 @@ import lib.utils.integer.Dimension2DI;
 
 public class SpriteSheetSimpleDude extends SpriteSheet {
 
-private static SpriteSheetSimpleDude simpleDudeSheet = null;
+private static final SpriteSheetSimpleDude simpleDudeSheet = new SpriteSheetSimpleDude();
 	
 	private SpriteSheetSimpleDude()
 	{
@@ -14,8 +14,6 @@ private static SpriteSheetSimpleDude simpleDudeSheet = null;
 	
 	public static SpriteSheetSimpleDude getInstance()
 	{
-		if(simpleDudeSheet == null)
-			simpleDudeSheet = new SpriteSheetSimpleDude();
 		return simpleDudeSheet;
 	}
 
