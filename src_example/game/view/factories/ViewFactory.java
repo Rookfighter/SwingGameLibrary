@@ -3,6 +3,7 @@ package game.view.factories;
 import java.awt.BorderLayout;
 
 import game.controller.factories.ControllerFactory;
+import game.view.controls.FovControl;
 import game.view.frame.DudeGameFrame;
 import game.view.panel.DudeGamePanel;
 import lib.graphics.frame.GameFrame;
@@ -16,6 +17,7 @@ public class ViewFactory {
 	private final GameFrame gameFrame;
 	private final GamePanel gamePanel;
 	private final StatusPanel statusPanel;
+	private final FovControl fovControl;
 	
 	public ViewFactory()
 	{
@@ -23,7 +25,9 @@ public class ViewFactory {
 		gameFrame = new DudeGameFrame();
 		gamePanel = new DudeGamePanel(contrFactory.getFieldOfVisionController());
 		statusPanel = new StatusPanel();
+		fovControl = new FovControl();
 		initGamePanel();
+		initFovControl();
 		initGameFrame();
 	}
 	
@@ -33,11 +37,17 @@ public class ViewFactory {
 		gamePanel.setPreferredSize(fovDimension);
 	}
 	
+	private void initFovControl()
+	{
+		fovControl.setFovController(contrFactory.getFieldOfVisionController());
+	}
+	
 	private void initGameFrame()
 	{
 		gameFrame.setTitle("Dude Game");
 		gameFrame.add(gamePanel, BorderLayout.CENTER);
 		gameFrame.add(statusPanel, BorderLayout.LINE_END);
+		gameFrame.setKeyControl(fovControl);
 		gameFrame.pack();
 	}
 	

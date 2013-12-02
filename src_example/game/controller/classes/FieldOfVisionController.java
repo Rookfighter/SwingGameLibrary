@@ -1,10 +1,13 @@
 package game.controller.classes;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import lib.utils.doubl.Dimension2DF;
 import lib.utils.doubl.Position2DF;
 import lib.utils.doubl.Rectangle2DF;
+import lib.utils.doubl.Vector2D;
 import game.controller.IFieldOfVisionController;
 import game.controller.IObjectSearcher;
 import game.entities.IFieldOfVision;
@@ -12,16 +15,20 @@ import game.entities.IGameObject;
 import game.entities.IGameWorld;
 
 public class FieldOfVisionController implements IFieldOfVisionController {
-
+	
+	private static final double MAX_SPEED = 5.0;
+	
 	private IGameWorld world;
 	private IFieldOfVision fieldOfVision;
-	private final double scrollSpeed = 5.0;
 	private IObjectSearcher objSearcher;
 	private Dimension2DF inFoVBuffer;
+	
+	private Queue<Vector2D> controls;
 	
 	public FieldOfVisionController()
 	{
 		this(null);
+		controls = new LinkedList<Vector2D>();
 	}
 	
 	public FieldOfVisionController(final IFieldOfVision p_fov)
@@ -32,10 +39,35 @@ public class FieldOfVisionController implements IFieldOfVisionController {
 		inFoVBuffer = new Dimension2DF();
 	}
 	
+	public void addVector(final Vector2D p_vector)
+	{
+		synchronized(controls)
+		{
+			controls.add(p_vector);
+		}
+	}
+	
 	@Override
 	public void doLogics()
 	{
+		useVectors();
 		moveFieldOfVision();
+	}
+	
+	private void useVectors()
+	{
+		synchronized(controls)
+		{
+			while(!controls.isEmpty())
+				fieldOfVision.getVector().add(controls.poll());
+		}
+		
+		double dxFac = Math.abs(MAX_SPEED / fieldOfVision.getVector().DX);
+		double dyFac = Math.abs(MAX_SPEED / fieldOfVision.getVector().DY);
+		if(dxFac < 1)
+			fieldOfVision.getVector().DX *= dxFac;
+		if(dyFac < 1)
+			fieldOfVision.getVector().DY *= dyFac;
 	}
 	
 	private void moveFieldOfVision()
@@ -131,27 +163,6 @@ public class FieldOfVisionController implements IFieldOfVisionController {
 	{
 		return objSearcher.getObjectsInRect(new Rectangle2DF(fieldOfVision.getPosition(),
 															inFoVBuffer));
-	}
-
-	//ÜBERDENKEN TODO
-	public void moveRight()
-	{
-		fieldOfVision.getVector().DX += scrollSpeed;
-	}
-	
-	public void moveLeft()
-	{
-		fieldOfVision.getVector().DX -= scrollSpeed;
-	}
-	
-	public void moveUp()
-	{
-		fieldOfVision.getVector().DY -= scrollSpeed;
-	}
-	
-	public void moveDown()
-	{
-		fieldOfVision.getVector().DY += scrollSpeed;
 	}
 	
 }
