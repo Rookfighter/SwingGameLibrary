@@ -1,8 +1,12 @@
 package lib.app;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.swing.JOptionPane;
 
-import lib.graphics.panel.GamePanel;
+import lib.graphics.IRedrawable;
+import lib.graphics.IUseDelta;
 import lib.utils.TimeAccount;
 
 public abstract class GameThread extends Thread {
@@ -13,7 +17,8 @@ public abstract class GameThread extends Thread {
 	private static final int MIN_SLEEPTIME = 1;
 	private int sleepMsecs;
 	
-	private GamePanel gamePanel;
+	private Set<IRedrawable> redrawableSet;
+	
 	private DeltaTimeManager deltaManager;
 	private TimeAccount timeAccount;
 	
@@ -23,6 +28,7 @@ public abstract class GameThread extends Thread {
 		deltaManager = new DeltaTimeManager();
 		timeAccount = new TimeAccount(deltaManager.getDeltaTime());
 		sleepMsecs = timeAccount.getStepMilli() / 2;
+		redrawableSet = new HashSet<IRedrawable>();
 	}
 	
 	public DeltaTimeManager getDeltaTimeManager()
@@ -30,10 +36,21 @@ public abstract class GameThread extends Thread {
 		return deltaManager;
 	}
 	
-	public void setGamePanel(final GamePanel p_gamePanel)
+	public void addRedrawable(final IRedrawable p_redrawable)
 	{
-		gamePanel = p_gamePanel;
-		gamePanel.setDeltaTime(deltaManager.getDrawDeltaTime());
+		if(p_redrawable instanceof IUseDelta)
+			((IUseDelta) p_redrawable).setDeltaTime(deltaManager.getDrawDeltaTime());
+		redrawableSet.add(p_redrawable);
+	}
+	
+	public boolean removeRedrawable(final IRedrawable p_redrawable)
+	{
+		return redrawableSet.remove(p_redrawable);
+	}
+	
+	public void clearRedrawables()
+	{
+		redrawableSet.clear();
 	}
 	
 	@Override
@@ -46,7 +63,7 @@ public abstract class GameThread extends Thread {
 		catch ( Exception e)
 		{
 			String msg = String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage());
-			JOptionPane.showMessageDialog(gamePanel, msg, e.getClass().getSimpleName() , JOptionPane.OK_OPTION);
+			JOptionPane.showMessageDialog(null, msg, e.getClass().getSimpleName() , JOptionPane.OK_OPTION);
 			System.out.println(msg);
 		}
 		System.out.println("Thread terminated.");
@@ -62,7 +79,7 @@ public abstract class GameThread extends Thread {
 		{
 			catchTime();
 			executeLogicsInTime();
-			paint();
+			redraw();
 			sleep(sleepMsecs);
 		}
 	}
@@ -89,11 +106,11 @@ public abstract class GameThread extends Thread {
 	//to implement
 	protected abstract void executeLogics();
 	
-	private void paint()
+	private void redraw()
 	{
 		synchronizeDeltaTimes();
-		gamePanel.generatePaintlist();
-		gamePanel.render();
+		for(IRedrawable redrawable : redrawableSet)
+			redrawable.redraw();
 	}
 	
 	private void synchronizeDeltaTimes()
