@@ -33,6 +33,17 @@ public class Vector2D {
 		DY = p_dy;
 	}
 	
+	public void invert()
+	{
+		DX = -DX;
+		DY = -DY;
+	}
+	
+	public Vector2D getInversion()
+	{
+		return new Vector2D(-DX, -DY);
+	}
+	
 	public void assign(final Vector2D p_vector)
 	{
 		DX = p_vector.DX;

@@ -19,7 +19,8 @@ public class GameFactory {
 	private void initGameThread()
 	{
 		gameThread.setGameController(viewFactory.getControllerFactory().getGameController());
-		gameThread.setGamePanel(viewFactory.getGamePanel());
+		gameThread.addRedrawable(viewFactory.getGamePanel());
+		gameThread.addRedrawable(viewFactory.getStatusPanel());
 		gameThread.setPriority(Thread.MAX_PRIORITY);
 	}
 	

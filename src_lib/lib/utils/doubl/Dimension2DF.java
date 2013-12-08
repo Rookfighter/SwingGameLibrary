@@ -68,6 +68,12 @@ public class Dimension2DF {
 		return width == dim.Width() && height == dim.Height();
 	}
 	
+	@Override
+	public String toString()
+	{
+		return String.format("%.2fx%.2f", width, height);
+	}
+	
 	public Dimension toAWTDimension()
 	{
 		return new Dimension((int) width, (int) height);

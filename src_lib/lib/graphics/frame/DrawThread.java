@@ -5,7 +5,7 @@ import java.awt.image.BufferStrategy;
 
 import lib.graphics.panel.GamePanel;
 
-public class RenderThread extends Thread {
+public class DrawThread extends Thread {
 
 	private BufferStrategy bufferStrategy;
 	private GamePanel gamePanel;

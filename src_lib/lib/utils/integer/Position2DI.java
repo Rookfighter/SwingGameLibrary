@@ -75,4 +75,10 @@ public class Position2DI {
 		return x == pos.X() && y == pos.Y();
 	}
 	
+	@Override
+	public String toString()
+	{
+		return String.format("(%d/%d)", x, y);
+	}
+	
 }

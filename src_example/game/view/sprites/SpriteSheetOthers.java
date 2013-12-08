@@ -5,7 +5,7 @@ import lib.utils.integer.Dimension2DI;
 
 public class SpriteSheetOthers extends SpriteSheet{
 
-	private static SpriteSheetOthers othersSheet = null;
+	private static final SpriteSheetOthers othersSheet = new SpriteSheetOthers();
 	
 	private SpriteSheetOthers()
 	{
@@ -14,8 +14,6 @@ public class SpriteSheetOthers extends SpriteSheet{
 	
 	public static SpriteSheetOthers getInstance()
 	{
-		if(othersSheet == null)
-			othersSheet = new SpriteSheetOthers();
 		return othersSheet;
 	}
 }

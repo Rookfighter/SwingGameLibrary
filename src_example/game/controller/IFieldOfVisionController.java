@@ -3,6 +3,7 @@ package game.controller;
 import java.util.List;
 
 import lib.utils.doubl.Dimension2DF;
+import lib.utils.doubl.Vector2D;
 import game.entities.IFieldOfVision;
 import game.entities.IGameObject;
 import game.entities.IGameWorld;
@@ -20,4 +21,6 @@ public interface IFieldOfVisionController extends IController{
 	
 	List<IGameObject> getObjectsInFoV();
 	List<IGameObject> getObjectsInFoVBuffer();
+	
+	void addVector(final Vector2D p_vector);
 }

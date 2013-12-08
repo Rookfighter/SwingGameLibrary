@@ -62,6 +62,12 @@ public class Position2DF {
 		return x == pos.X() && y == pos.Y();
 	}
 	
+	@Override
+	public String toString()
+	{
+		return String.format("(%.2f/%.2f)", x, y);
+	}
+	
 	public Position2DF getDestinationPosition(final Vector2D p_vector)
 	{
 		return new Position2DF(x + p_vector.DX, y + p_vector.DY);

@@ -31,7 +31,6 @@ public class SoundLoader implements ISoundLoader {
 	{
 		for(ISound sound : soundList)
 			sound.load();
-		
 	}
 
 }

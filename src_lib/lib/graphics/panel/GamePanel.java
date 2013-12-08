@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.LinkedList;
 
 import lib.graphics.IDrawable;
-import lib.graphics.frame.RenderThread;
+import lib.graphics.IRedrawable;
+import lib.graphics.IUseDelta;
+import lib.graphics.frame.DrawThread;
 import lib.utils.DeltaTime;
 import lib.utils.doubl.Dimension2DF;
 import lib.utils.integer.Dimension2DI;
 
-public class GamePanel extends Canvas {
+public class GamePanel extends Canvas implements IRedrawable, IUseDelta {
 
 	private static final long serialVersionUID = 5656487653867749985L;
 	private static final int BUFFER_COUNT = 3;
@@ -32,6 +34,7 @@ public class GamePanel extends Canvas {
 		drawList.addAll(p_drawList);
 	}
 	
+	@Override
 	public void setDeltaTime(final DeltaTime p_deltaTime)
 	{
 		deltaTime = p_deltaTime;
@@ -63,13 +66,20 @@ public class GamePanel extends Canvas {
 		return drawListGenerator;
 	}
 	
-	public void render()
+	@Override
+	public void redraw()
+	{
+		generatePaintlist();
+		draw();
+	}
+	
+	private void draw()
 	{
 		if(!isDisplayable())
 			throw new IllegalStateException("GamePanel cannot be rendered. GamePanel is not displayable.");
 			
 		setBufferStrategy();
-		startRenderThread();
+		startDrawThread();
 	}
 	
 	private void setBufferStrategy()
@@ -78,9 +88,9 @@ public class GamePanel extends Canvas {
 			createBufferStrategy(BUFFER_COUNT);
 	}
 	
-	private void startRenderThread()
+	private void startDrawThread()
 	{
-		RenderThread thread = new RenderThread();
+		DrawThread thread = new DrawThread();
 		thread.setPriority(Thread.MAX_PRIORITY);
 		thread.setGamePanel(this);
 		thread.start();
