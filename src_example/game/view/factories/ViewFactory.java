@@ -6,8 +6,8 @@ import game.controller.factories.ControllerFactory;
 import game.view.controls.FovControl;
 import game.view.frame.DudeGameFrame;
 import game.view.panel.DudeGamePanel;
+import lib.graphics.components.StatusPanel;
 import lib.graphics.frame.GameFrame;
-import lib.graphics.hud.StatusPanel;
 import lib.graphics.panel.GamePanel;
 import lib.utils.doubl.Dimension2DF;
 
