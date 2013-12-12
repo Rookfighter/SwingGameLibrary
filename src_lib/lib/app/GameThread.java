@@ -3,13 +3,13 @@ package lib.app;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
-
 import lib.graphics.IRedrawable;
 import lib.graphics.IUseDelta;
 import lib.utils.TimeAccount;
 
 public abstract class GameThread extends Thread {
+
+	public static final int EXCEPTION_OCCURED = -1;
 	
 	public volatile boolean runGame = true;
 	
@@ -22,6 +22,9 @@ public abstract class GameThread extends Thread {
 	private DeltaTimeManager deltaManager;
 	private TimeAccount timeAccount;
 	
+	private int exitStatus;
+	private Exception exitException;
+	
 	public GameThread()
 	{
 		super();
@@ -29,6 +32,16 @@ public abstract class GameThread extends Thread {
 		timeAccount = new TimeAccount(deltaManager.getDeltaTime());
 		sleepMsecs = timeAccount.getStepMilli() / 2;
 		redrawableSet = new HashSet<IRedrawable>();
+	}
+	
+	public int getExitStatus()
+	{
+		return exitStatus;
+	}
+	
+	public Exception getException()
+	{
+		return exitException;
 	}
 	
 	public DeltaTimeManager getDeltaTimeManager()
@@ -56,17 +69,24 @@ public abstract class GameThread extends Thread {
 	@Override
 	public void run()
 	{
+		initExitStatus();
+		
 		try
 		{
 			runGame();
 		}
-		catch ( Exception e)
+		catch (Exception e)
 		{
-			String msg = String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage());
-			JOptionPane.showMessageDialog(null, msg, e.getClass().getSimpleName() , JOptionPane.OK_OPTION);
-			System.out.println(msg);
+			exitException = e;
+			exitStatus = EXCEPTION_OCCURED;
 		}
 		System.out.println("Thread terminated.");
+	}
+	
+	private void initExitStatus()
+	{
+		exitStatus = 0;
+		exitException = null;
 	}
 	
 	

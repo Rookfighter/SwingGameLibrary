@@ -1,5 +1,8 @@
 package game.app;
 
+import javax.swing.JOptionPane;
+
+import lib.app.GameThread;
 import lib.graphics.frame.GameFrame;
 import game.app.factories.GameFactory;
 import game.audio.music.BackgroundMusic;
@@ -22,6 +25,7 @@ public final class Application {
 	{
 		Application app = new Application();
 		app.initializeGame();
+		app.waitForThread();
 	}
 	
 	private void initializeGame()
@@ -45,5 +49,25 @@ public final class Application {
 		gameFrame.loadSpriteSheets();
 		gameFrame.loadSounds();
 		BackgroundMusic.getInstance().start();
+	}
+	
+	private void waitForThread()
+	{
+		try
+		{
+			gameFactory.getGameThread().join();
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		
+		if(gameFactory.getGameThread().getExitStatus() == GameThread.EXCEPTION_OCCURED)
+		{
+			Exception e = gameFactory.getGameThread().getException();
+			String msg = String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage());
+			JOptionPane.showMessageDialog(gameFactory.getViewFactory().getGameFrame(), msg, e.getClass().getSimpleName() , JOptionPane.OK_OPTION);
+			System.out.println(msg);
+		}
+			
 	}
 }
