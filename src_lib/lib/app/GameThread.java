@@ -11,7 +11,9 @@ public abstract class GameThread extends Thread {
 
 	public static final int EXCEPTION_OCCURED = -1;
 	
-	public volatile boolean runGame = true;
+	private volatile boolean stopThread;
+	private volatile boolean pausePainting ;
+	private volatile boolean pauseLogics;
 	
 	//in microseconds
 	private static final int MIN_SLEEPTIME = 1;
@@ -28,6 +30,9 @@ public abstract class GameThread extends Thread {
 	public GameThread()
 	{
 		super();
+		stopThread(false);
+		pausePainting(false);
+		pauseLogic(false);
 		deltaManager = new DeltaTimeManager();
 		timeAccount = new TimeAccount(deltaManager.getDeltaTime());
 		sleepMsecs = timeAccount.getStepMilli() / 2;
@@ -66,6 +71,21 @@ public abstract class GameThread extends Thread {
 		redrawableSet.clear();
 	}
 	
+	public void stopThread(boolean p_stop)
+	{
+		stopThread = p_stop;
+	}
+	
+	public void pauseLogic(boolean p_pause)
+	{
+		pauseLogics = p_pause;
+	}
+	
+	public void pausePainting(boolean p_pause)
+	{
+		pausePainting = p_pause;
+	}
+	
 	@Override
 	public void run()
 	{
@@ -95,11 +115,11 @@ public abstract class GameThread extends Thread {
 		//for initialization
 		//else last = 0 and current = XXXXX -> big time diff
 		catchTime();
-		while(runGame) 
+		while(!stopThread) 
 		{
 			catchTime();
-			executeLogicsInTime();
-			redraw();
+			executeLogicsIfNotPaused();
+			redrawIfNotPaused();
 			sleep(sleepMsecs);
 		}
 	}
@@ -111,6 +131,12 @@ public abstract class GameThread extends Thread {
 		if(sleepMsecs <= 0)
 			sleepMsecs = MIN_SLEEPTIME;
 		System.out.println(deltaManager.getDeltaTime().getFPS());
+	}
+	
+	private void executeLogicsIfNotPaused()
+	{
+		if(!pauseLogics)
+			executeLogicsInTime();
 	}
 	
 	private void executeLogicsInTime()
@@ -125,6 +151,12 @@ public abstract class GameThread extends Thread {
 	
 	//to implement
 	protected abstract void executeLogics();
+	
+	private void redrawIfNotPaused()
+	{
+		if(!pausePainting)
+			redraw();
+	}
 	
 	private void redraw()
 	{
