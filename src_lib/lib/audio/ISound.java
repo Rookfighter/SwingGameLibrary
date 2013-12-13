@@ -21,4 +21,9 @@ public interface ISound {
 	boolean repeat();
 	
 	void closeOnEnd(final boolean p_close);
+	
+	void setVolume(final float p_volume);
+	float getVolume();
+	float getMinVolume();
+	float getMaxVolume();
 }
