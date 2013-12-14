@@ -130,7 +130,6 @@ public abstract class GameThread extends Thread {
 		sleepMsecs += timeAccount.getStepMilli() - deltaManager.getDeltaTime().getMilli();
 		if(sleepMsecs <= 0)
 			sleepMsecs = MIN_SLEEPTIME;
-		System.out.println(deltaManager.getDeltaTime().getFPS());
 	}
 	
 	private void executeLogicsIfNotPaused()
