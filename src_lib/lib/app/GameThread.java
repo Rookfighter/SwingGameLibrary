@@ -3,15 +3,17 @@ package lib.app;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.JOptionPane;
-
 import lib.graphics.IRedrawable;
 import lib.graphics.IUseDelta;
 import lib.utils.TimeAccount;
 
 public abstract class GameThread extends Thread {
+
+	public static final int EXCEPTION_OCCURED = -1;
 	
-	public volatile boolean runGame = true;
+	private volatile boolean stopThread;
+	private volatile boolean pausePainting ;
+	private volatile boolean pauseLogics;
 	
 	//in microseconds
 	private static final int MIN_SLEEPTIME = 1;
@@ -22,13 +24,29 @@ public abstract class GameThread extends Thread {
 	private DeltaTimeManager deltaManager;
 	private TimeAccount timeAccount;
 	
+	private int exitStatus;
+	private Exception exitException;
+	
 	public GameThread()
 	{
 		super();
+		stopThread(false);
+		pausePainting(false);
+		pauseLogic(false);
 		deltaManager = new DeltaTimeManager();
 		timeAccount = new TimeAccount(deltaManager.getDeltaTime());
 		sleepMsecs = timeAccount.getStepMilli() / 2;
 		redrawableSet = new HashSet<IRedrawable>();
+	}
+	
+	public int getExitStatus()
+	{
+		return exitStatus;
+	}
+	
+	public Exception getException()
+	{
+		return exitException;
 	}
 	
 	public DeltaTimeManager getDeltaTimeManager()
@@ -53,20 +71,42 @@ public abstract class GameThread extends Thread {
 		redrawableSet.clear();
 	}
 	
+	public void stopThread(boolean p_stop)
+	{
+		stopThread = p_stop;
+	}
+	
+	public void pauseLogic(boolean p_pause)
+	{
+		pauseLogics = p_pause;
+	}
+	
+	public void pausePainting(boolean p_pause)
+	{
+		pausePainting = p_pause;
+	}
+	
 	@Override
 	public void run()
 	{
+		initExitStatus();
+		
 		try
 		{
 			runGame();
 		}
-		catch ( Exception e)
+		catch (Exception e)
 		{
-			String msg = String.format("%s: %s", e.getClass().getSimpleName(), e.getMessage());
-			JOptionPane.showMessageDialog(null, msg, e.getClass().getSimpleName() , JOptionPane.OK_OPTION);
-			System.out.println(msg);
+			exitException = e;
+			exitStatus = EXCEPTION_OCCURED;
 		}
 		System.out.println("Thread terminated.");
+	}
+	
+	private void initExitStatus()
+	{
+		exitStatus = 0;
+		exitException = null;
 	}
 	
 	
@@ -75,11 +115,11 @@ public abstract class GameThread extends Thread {
 		//for initialization
 		//else last = 0 and current = XXXXX -> big time diff
 		catchTime();
-		while(runGame) 
+		while(!stopThread) 
 		{
 			catchTime();
-			executeLogicsInTime();
-			redraw();
+			executeLogicsIfNotPaused();
+			redrawIfNotPaused();
 			sleep(sleepMsecs);
 		}
 	}
@@ -91,6 +131,12 @@ public abstract class GameThread extends Thread {
 		if(sleepMsecs <= 0)
 			sleepMsecs = MIN_SLEEPTIME;
 		System.out.println(deltaManager.getDeltaTime().getFPS());
+	}
+	
+	private void executeLogicsIfNotPaused()
+	{
+		if(!pauseLogics)
+			executeLogicsInTime();
 	}
 	
 	private void executeLogicsInTime()
@@ -105,6 +151,12 @@ public abstract class GameThread extends Thread {
 	
 	//to implement
 	protected abstract void executeLogics();
+	
+	private void redrawIfNotPaused()
+	{
+		if(!pausePainting)
+			redraw();
+	}
 	
 	private void redraw()
 	{

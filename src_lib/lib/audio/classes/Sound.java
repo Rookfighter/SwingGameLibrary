@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
@@ -147,6 +148,35 @@ public class Sound implements ISound{
 				reset();
 		}
 		
+	}
+
+	@Override
+	public void setVolume(float p_volume)
+	{
+		getVolumeControl().setValue(p_volume);
+	}
+
+	@Override
+	public float getVolume()
+	{
+		return getVolumeControl().getValue();
+	}
+	
+	@Override
+	public float getMinVolume()
+	{
+		return getVolumeControl().getMinimum();
+	}
+	
+	@Override
+	public float getMaxVolume()
+	{
+		return getVolumeControl().getMinimum();
+	}
+	
+	private FloatControl getVolumeControl()
+	{
+		return (FloatControl) audioClip.getControl(FloatControl.Type.VOLUME);
 	}
 	
 	
