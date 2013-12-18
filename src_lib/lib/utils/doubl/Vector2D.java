@@ -1,5 +1,7 @@
 package lib.utils.doubl;
 
+import lib.utils.integer.Position2DI;
+
 public class Vector2D {
 
 	public double DX;
@@ -48,5 +50,24 @@ public class Vector2D {
 	{
 		DX = p_vector.DX;
 		DY = p_vector.DY;
+	}
+	
+	public static Vector2D vectorBetween(final Position2DF p_start, final Position2DF p_end)
+	{
+		return vectorBetween(p_start.X(), p_start.Y(), p_end.X(), p_end.Y());
+	}
+	
+	public static Vector2D vectorBetween(final Position2DI p_start, final Position2DI p_end)
+	{
+		return vectorBetween(p_start.X(), p_start.Y(), p_end.X(), p_end.Y());
+	}
+	
+	private static Vector2D vectorBetween(final double p_x1, final double p_y1,
+										  final double p_x2, final double p_y2)
+	
+	{
+		double dx = p_x1 - p_x2;
+		double dy = p_y1 - p_y2;
+		return new Vector2D(dx,dy);
 	}
 }
