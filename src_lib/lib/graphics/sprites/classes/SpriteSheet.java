@@ -62,8 +62,11 @@ public class SpriteSheet implements ISpriteSheet {
 	}
 	
 	@Override
-	public void drawSprite(int p_index, Position2DI p_position,
-			Dimension2DI p_dimension, double p_radian, Graphics p_graphic)
+	public void drawSprite(int p_index,
+						   Position2DI p_position,
+						   Dimension2DI p_dimension,
+						   double p_radian,
+						   Graphics p_graphic)
 	{
 		BufferedImage drawImage = new BufferedImage(p_dimension.Width(), p_dimension.Height(), spriteSheetImg.getType());
 		Graphics2D drawGraphics = drawImage.createGraphics();
