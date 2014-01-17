@@ -17,6 +17,7 @@ import lib.graphics.panel.DrawOrderComparator;
 import lib.graphics.panel.IDrawListGenerator;
 import lib.graphics.sprites.ISprite;
 import lib.utils.DeltaTime;
+import lib.utils.TimeAccount;
 import lib.utils.doubl.Vector2D;
 import lib.utils.integer.Position2DI;
 
@@ -178,5 +179,11 @@ public class GameDrawListGenerator implements IDrawListGenerator {
 	{
 		delta = p_delta;
 		
+	}
+
+	@Override
+	public void setTimeAccount(TimeAccount p_account)
+	{
+		// TODO Auto-generated method stub
 	}
 }

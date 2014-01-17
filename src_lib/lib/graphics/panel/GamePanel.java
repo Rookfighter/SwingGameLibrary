@@ -8,12 +8,14 @@ import java.util.LinkedList;
 import lib.graphics.IDrawable;
 import lib.graphics.IRedrawable;
 import lib.graphics.IUseDelta;
+import lib.graphics.IUseTimeAccount;
 import lib.graphics.frame.DrawThread;
 import lib.utils.DeltaTime;
+import lib.utils.TimeAccount;
 import lib.utils.doubl.Dimension2DF;
 import lib.utils.integer.Dimension2DI;
 
-public class GamePanel extends Canvas implements IRedrawable, IUseDelta {
+public class GamePanel extends Canvas implements IRedrawable, IUseDelta, IUseTimeAccount {
 
 	private static final long serialVersionUID = 5656487653867749985L;
 	private static final int BUFFER_COUNT = 3;
@@ -21,6 +23,7 @@ public class GamePanel extends Canvas implements IRedrawable, IUseDelta {
 	private List<IDrawable> drawList;
 	private IDrawListGenerator drawListGenerator;
 	private DeltaTime deltaTime;
+	private TimeAccount timeAccount;
 	
 	public GamePanel()
 	{
@@ -39,6 +42,13 @@ public class GamePanel extends Canvas implements IRedrawable, IUseDelta {
 	{
 		deltaTime = p_deltaTime;
 		drawListGenerator.setDeltaTime(deltaTime);
+	}
+	
+	@Override
+	public void setTimeAccount(final TimeAccount p_account)
+	{
+		timeAccount = p_account;
+		drawListGenerator.setTimeAccount(timeAccount);
 	}
 	
 	public DeltaTime getDeltaTime()
@@ -99,11 +109,14 @@ public class GamePanel extends Canvas implements IRedrawable, IUseDelta {
 	public void renderGame(final Graphics p_graphic)
 	{
 		clearCanvasGraphics(p_graphic);
-		synchronized(deltaTime)
+		synchronized(timeAccount)
 		{
-			synchronized(drawList)
+			synchronized(deltaTime)
 			{
-				paintDrawableObjects(p_graphic);
+				synchronized(drawList)
+				{
+					paintDrawableObjects(p_graphic);
+				}
 			}
 		}
 	}

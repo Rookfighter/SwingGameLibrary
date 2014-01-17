@@ -3,6 +3,7 @@ package lib.utils;
 public class TimeAccount {
 	
 	private static final int THOUSAND = 1000;
+	private static final double DEF_FPS_LIMIT = 60.0;
 	
 	private int timeStep; //milliseconds
 	private double fps;
@@ -12,7 +13,7 @@ public class TimeAccount {
 	public TimeAccount(final DeltaTime p_deltaTime)
 	{
 		timeAccount = 0;
-		setFPSLimit(60.0);
+		setFPSLimit(DEF_FPS_LIMIT);
 		deltaTime = p_deltaTime;
 	}
 	
@@ -29,6 +30,11 @@ public class TimeAccount {
 	public void increase()
 	{
 		timeAccount += deltaTime.getMilli();
+	}
+	
+	public int value()
+	{
+		return timeAccount; 
 	}
 	
 	public void setFPSLimit(final double p_fps)
@@ -55,6 +61,13 @@ public class TimeAccount {
 	public int getStepMilli()
 	{
 		return timeStep;
+	}
+	
+	public void assign(final TimeAccount p_timeAccount)
+	{
+		timeStep = p_timeAccount.timeStep;
+		fps = p_timeAccount.fps;
+		timeAccount = p_timeAccount.timeAccount;
 	}
 	
 
