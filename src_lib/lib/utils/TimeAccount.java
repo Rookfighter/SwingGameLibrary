@@ -32,7 +32,7 @@ public class TimeAccount {
 		timeAccount += deltaTime.getMilli();
 	}
 	
-	public int value()
+	public int valueMilli()
 	{
 		return timeAccount; 
 	}
