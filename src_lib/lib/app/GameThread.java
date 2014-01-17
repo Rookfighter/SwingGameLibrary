@@ -15,9 +15,7 @@ public abstract class GameThread extends Thread {
 	private volatile boolean pausePainting ;
 	private volatile boolean pauseLogics;
 	
-	//in microseconds
-	private static final int MIN_SLEEPTIME = 1;
-	private int sleepMsecs;
+	private SleepTimeCalculator sleepTime;
 	
 	private Set<IRedrawable> redrawableSet;
 	
@@ -35,7 +33,7 @@ public abstract class GameThread extends Thread {
 		pauseLogic(false);
 		deltaManager = new DeltaTimeManager();
 		accountManager = new TimeAccountManager(deltaManager.getDeltaTime());
-		sleepMsecs = accountManager.getTimeAccount().getStepMilli() / 2;
+		sleepTime = new SleepTimeCalculator();
 		redrawableSet = new HashSet<IRedrawable>();
 	}
 	
@@ -123,16 +121,14 @@ public abstract class GameThread extends Thread {
 			catchTime();
 			executeLogicsIfNotPaused();
 			redrawIfNotPaused();
-			sleep(sleepMsecs);
+			sleep(sleepTime.value());
 		}
 	}
 	
 	private void catchTime()
 	{
 		deltaManager.catchTime();
-		sleepMsecs += accountManager.getTimeAccount().getStepMilli() - deltaManager.getDeltaTime().getMilli();
-		if(sleepMsecs <= 0)
-			sleepMsecs = MIN_SLEEPTIME;
+		sleepTime.add(accountManager.getTimeAccount().getStepMilli() - deltaManager.getDeltaTime().getMilli());
 	}
 	
 	private void executeLogicsIfNotPaused()
@@ -184,6 +180,4 @@ public abstract class GameThread extends Thread {
 		}
 	}
 	
-	
-
 }
