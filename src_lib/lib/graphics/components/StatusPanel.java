@@ -64,6 +64,12 @@ public class StatusPanel extends JPanel implements IRedrawable, IUseDelta {
 	{
 		deltaTime = p_deltaTime;
 	}
+	
+	@Override
+	public DeltaTime getDeltaTime()
+	{
+		return deltaTime;
+	}
 
 	@Override
 	public void redraw()
@@ -105,7 +111,5 @@ public class StatusPanel extends JPanel implements IRedrawable, IUseDelta {
 		if(count > MAX_COUNT)
 			count = 0;
 	}
-
-	
 
 }

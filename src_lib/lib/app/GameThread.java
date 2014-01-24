@@ -6,6 +6,8 @@ import java.util.Set;
 import lib.graphics.IRedrawable;
 import lib.graphics.IUseDelta;
 import lib.graphics.IUseTimeAccount;
+import lib.utils.DeltaTime;
+import lib.utils.TimeAccount;
 
 public abstract class GameThread extends Thread {
 
@@ -19,8 +21,8 @@ public abstract class GameThread extends Thread {
 	
 	private Set<IRedrawable> redrawableSet;
 	
-	private DeltaTimeManager deltaManager;
-	private TimeAccountManager accountManager;
+	private DeltaTime delta;
+	private TimeAccount timeAccount;
 	
 	private int exitStatus;
 	private Exception exitException;
@@ -31,8 +33,10 @@ public abstract class GameThread extends Thread {
 		stopThread(false);
 		pausePainting(false);
 		pauseLogic(false);
-		deltaManager = new DeltaTimeManager();
-		accountManager = new TimeAccountManager(deltaManager.getDeltaTime());
+		
+		delta = new DeltaTime();
+		timeAccount = new TimeAccount(delta);
+		
 		sleepTime = new SleepTimeCalculator();
 		redrawableSet = new HashSet<IRedrawable>();
 	}
@@ -47,18 +51,18 @@ public abstract class GameThread extends Thread {
 		return exitException;
 	}
 	
-	public DeltaTimeManager getDeltaTimeManager()
+	public DeltaTime getDeltaTime()
 	{
-		return deltaManager;
+		return delta;
 	}
 	
 	public void addRedrawable(final IRedrawable p_redrawable)
 	{
 		if(p_redrawable instanceof IUseDelta)
-			((IUseDelta) p_redrawable).setDeltaTime(deltaManager.getDrawDeltaTime());
+			((IUseDelta) p_redrawable).setDeltaTime(delta);
 		
 		if(p_redrawable instanceof IUseTimeAccount)
-			((IUseTimeAccount) p_redrawable).setTimeAccount(accountManager.getDrawTimeAccount());
+			((IUseTimeAccount) p_redrawable).setTimeAccount(timeAccount);
 			
 		redrawableSet.add(p_redrawable);
 	}
@@ -127,8 +131,8 @@ public abstract class GameThread extends Thread {
 	
 	private void catchTime()
 	{
-		deltaManager.catchTime();
-		sleepTime.add(accountManager.getTimeAccount().getStepMilli() - deltaManager.getDeltaTime().getMilli());
+		delta.catchTime();
+		sleepTime.add(timeAccount.getStepMilli() - delta.getMilli());
 	}
 	
 	private void executeLogicsIfNotPaused()
@@ -139,11 +143,11 @@ public abstract class GameThread extends Thread {
 	
 	private void executeLogicsInTime()
 	{
-		accountManager.increase();
-		while(accountManager.isOverLimit())
+		timeAccount.increase();
+		while(timeAccount.isOverLimit())
 		{
 			executeLogics();
-			accountManager.decrease();
+			timeAccount.decrease();
 		}
 	}
 	
@@ -158,26 +162,8 @@ public abstract class GameThread extends Thread {
 	
 	private void redraw()
 	{
-		synchronizeDeltaTimes();
-		synchronizeTimeAccounts();
 		for(IRedrawable redrawable : redrawableSet)
 			redrawable.redraw();
-	}
-	
-	private void synchronizeDeltaTimes()
-	{
-		synchronized(deltaManager.getDrawDeltaTime())
-		{
-			deltaManager.assignDrawDeltaTime();
-		}
-	}
-	
-	private void synchronizeTimeAccounts()
-	{
-		synchronized(accountManager.getDrawTimeAccount())
-		{
-			accountManager.assignDrawTimeAccount();
-		}
 	}
 	
 }

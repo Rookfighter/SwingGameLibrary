@@ -9,6 +9,7 @@ import game.view.panel.DudeGamePanel;
 import lib.graphics.components.StatusPanel;
 import lib.graphics.frame.GameFrame;
 import lib.graphics.panel.GamePanel;
+import lib.graphics.panel.GamePanelManager;
 import lib.utils.doubl.Dimension2DF;
 
 public class ViewFactory {
@@ -16,6 +17,7 @@ public class ViewFactory {
 	private final ControllerFactory contrFactory;
 	private final GameFrame gameFrame;
 	private final GamePanel gamePanel;
+	private final GamePanelManager gamePanelManager;
 	private final StatusPanel statusPanel;
 	private final FovControl fovControl;
 	
@@ -24,9 +26,11 @@ public class ViewFactory {
 		contrFactory = new ControllerFactory();
 		gameFrame = new DudeGameFrame();
 		gamePanel = new DudeGamePanel(contrFactory.getFieldOfVisionController());
+		gamePanelManager = new GamePanelManager();
 		statusPanel = new StatusPanel();
 		fovControl = new FovControl();
 		initGamePanel();
+		initGamePanelManager();
 		initFovControl();
 		initGameFrame();
 	}
@@ -35,6 +39,11 @@ public class ViewFactory {
 	{
 		Dimension2DF fovDimension = contrFactory.getFieldOfVisionController().getFieldOfVision().getDimension();
 		gamePanel.setPreferredSize(fovDimension);
+	}
+	
+	private void initGamePanelManager()
+	{
+		gamePanelManager.add(gamePanel);
 	}
 	
 	private void initFovControl()
@@ -69,6 +78,11 @@ public class ViewFactory {
 	public StatusPanel getStatusPanel()
 	{
 		return statusPanel;
+	}
+	
+	public GamePanelManager getGamePanelManager()
+	{
+		return gamePanelManager;
 	}
 	
 }

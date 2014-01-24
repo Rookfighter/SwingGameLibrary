@@ -2,6 +2,7 @@ package lib.graphics.panel;
 
 import java.awt.Canvas;
 import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -9,7 +10,6 @@ import lib.graphics.IDrawable;
 import lib.graphics.IRedrawable;
 import lib.graphics.IUseDelta;
 import lib.graphics.IUseTimeAccount;
-import lib.graphics.frame.DrawThread;
 import lib.utils.DeltaTime;
 import lib.utils.TimeAccount;
 import lib.utils.doubl.Dimension2DF;
@@ -56,6 +56,11 @@ public class GamePanel extends Canvas implements IRedrawable, IUseDelta, IUseTim
 		return deltaTime;
 	}
 	
+	public TimeAccount getTimeAccount()
+	{
+		return timeAccount;
+	}
+	
 	public void clearDrawList()
 	{
 		drawList.clear();
@@ -79,46 +84,33 @@ public class GamePanel extends Canvas implements IRedrawable, IUseDelta, IUseTim
 	@Override
 	public void redraw()
 	{
-		generatePaintlist();
-		draw();
-	}
-	
-	private void draw()
-	{
-		if(!isDisplayable())
-			throw new IllegalStateException("GamePanel cannot be rendered. GamePanel is not displayable.");
-			
 		setBufferStrategy();
-		startDrawThread();
+		BufferStrategy buffStartegy = getBufferStrategy();
+		Graphics g = getBufferStrategy().getDrawGraphics();
+		
+		try
+		{
+			drawGame(g);
+		}
+		finally
+		{
+			g.dispose();
+		}
+		
+		buffStartegy.show();
+		
 	}
 	
-	private void setBufferStrategy()
+	public void setBufferStrategy()
 	{
 		if(getBufferStrategy() == null)
 			createBufferStrategy(BUFFER_COUNT);
 	}
 	
-	private void startDrawThread()
-	{
-		DrawThread thread = new DrawThread();
-		thread.setPriority(Thread.MAX_PRIORITY);
-		thread.setGamePanel(this);
-		thread.start();
-	}
-	
-	public void renderGame(final Graphics p_graphic)
+	public void drawGame(final Graphics p_graphic)
 	{
 		clearCanvasGraphics(p_graphic);
-		synchronized(timeAccount)
-		{
-			synchronized(deltaTime)
-			{
-				synchronized(drawList)
-				{
-					paintDrawableObjects(p_graphic);
-				}
-			}
-		}
+		paintDrawableObjects(p_graphic);
 	}
 	
 	private void clearCanvasGraphics(final Graphics p_graphic)
@@ -134,10 +126,7 @@ public class GamePanel extends Canvas implements IRedrawable, IUseDelta, IUseTim
 	
 	public void generatePaintlist()
 	{
-		synchronized(drawList)
-		{
-			setDrawList(drawListGenerator.generateDrawList()); 
-		}
+		setDrawList(drawListGenerator.generateDrawList()); 
 	}
 	
 	public void setPreferredSize(final Dimension2DI p_dimension)
@@ -150,7 +139,4 @@ public class GamePanel extends Canvas implements IRedrawable, IUseDelta, IUseTim
 		setPreferredSize(p_dimension.toAWTDimension());
 	}
 	
-	
-	
-
 }

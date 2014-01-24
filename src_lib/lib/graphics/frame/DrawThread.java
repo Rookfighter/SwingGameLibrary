@@ -1,6 +1,5 @@
 package lib.graphics.frame;
 
-import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
 import lib.graphics.panel.GamePanel;
@@ -19,30 +18,28 @@ public class DrawThread extends Thread {
 	@Override
 	public void run()
 	{
+		gamePanel.setBufferStrategy();
 		bufferStrategy = gamePanel.getBufferStrategy();
-		
-		synchRender();
+		synchDraw();
 	}
 	
-	private void synchRender()
+	private void synchDraw()
 	{
 		synchronized(bufferStrategy)
 		{
-			render();
+			synchronized(gamePanel.getDeltaTime())
+			{
+				synchronized(gamePanel.getTimeAccount())
+				{
+					draw();
+				}
+			}
+			
 		}
 	}
 	
-	private void render()
+	private void draw()
 	{
-		Graphics g = bufferStrategy.getDrawGraphics();
-		try
-		{
-			gamePanel.renderGame(g);
-		}
-		finally
-		{
-			g.dispose();
-		}
-		bufferStrategy.show();
+		gamePanel.redraw();
 	}
 }
