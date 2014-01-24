@@ -74,6 +74,7 @@ public class GamePanel extends Canvas implements IRedrawable, IUseDelta, IUseTim
 	public void setDrawListGenerator(final IDrawListGenerator p_drawListGenerator)
 	{
 		drawListGenerator = p_drawListGenerator;
+		drawListGenerator.setDeltaTime(deltaTime);
 	}
 	
 	public IDrawListGenerator getDrawListGenerator()

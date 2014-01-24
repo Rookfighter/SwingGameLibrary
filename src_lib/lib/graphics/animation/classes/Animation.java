@@ -3,6 +3,7 @@ package lib.graphics.animation.classes;
 import java.awt.Graphics;
 
 import lib.graphics.animation.IAnimation;
+import lib.graphics.sprites.ISprite;
 import lib.utils.DeltaTime;
 import lib.utils.integer.Dimension2DI;
 import lib.utils.integer.Position2DI;
@@ -20,6 +21,9 @@ public class Animation implements IAnimation {
 	private Dimension2DI dimension;
 	
 	private DeltaTime delta;
+	
+	private double rotation;
+	private int drawOrder;
 
 	public Animation()
 	{
@@ -35,7 +39,15 @@ public class Animation implements IAnimation {
 	{
 		increaseElapsedTime();
 		calculateIndex();
-		animationContainer.getSpriteOf(currentIndex).draw(p_graphic);
+		drawCurrentSprite(p_graphic);
+	}
+	
+	private void drawCurrentSprite(final Graphics p_graphic)
+	{
+		ISprite sprite = animationContainer.getSpriteOf(currentIndex);
+		sprite.setRotation(rotation);
+		sprite.setDrawOrder(drawOrder);
+		sprite.draw(p_graphic);
 	}
 	
 	private void increaseElapsedTime()
@@ -92,22 +104,19 @@ public class Animation implements IAnimation {
 	@Override
 	public int getDrawOrder()
 	{
-		return animationContainer.getSpriteOf(currentIndex).getDrawOrder();
+		return drawOrder;
 	}
 
 	@Override
 	public void setDrawOrder(int p_drawOrder)
 	{
-		for(int i = 0; i < animationContainer.size(); ++i)
-			animationContainer.getSpriteOf(i).setDrawOrder(p_drawOrder);
-
+		drawOrder = p_drawOrder;
 	}
 
 	@Override
 	public void setDefaultDrawOrder()
 	{
-		for(int i = 0; i < animationContainer.size(); ++i)
-			animationContainer.getSpriteOf(i).setDefaultDrawOrder();
+		drawOrder = position.Y();
 	}
 
 	@Override
@@ -131,7 +140,7 @@ public class Animation implements IAnimation {
 	@Override
 	public void setAnimationContainer(AnimationContainer p_container)
 	{
-		animationContainer.assign(p_container);
+		animationContainer = p_container;
 	}
 
 	@Override
@@ -195,6 +204,7 @@ public class Animation implements IAnimation {
 	@Override
 	public void setRotation(double p_radian)
 	{
+		rotation = p_radian;
 		for(int i = 0; i < animationContainer.size(); ++i)
 			animationContainer.getSpriteOf(i).setRotation(p_radian);
 		
@@ -203,7 +213,7 @@ public class Animation implements IAnimation {
 	@Override
 	public double getRotation()
 	{
-		return animationContainer.getSpriteOf(0).getRotation();
+		return rotation;
 	}
 	
 
