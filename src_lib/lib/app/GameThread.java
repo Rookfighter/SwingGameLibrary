@@ -121,7 +121,7 @@ public abstract class GameThread extends Thread {
 			catchTime();
 			executeLogicsIfNotPaused();
 			redrawIfNotPaused();
-			sleep(sleepTime.value());
+			//sleep(sleepTime.value());
 		}
 	}
 	

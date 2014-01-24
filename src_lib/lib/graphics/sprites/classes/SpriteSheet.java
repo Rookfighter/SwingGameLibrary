@@ -1,6 +1,5 @@
 package lib.graphics.sprites.classes;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -140,11 +139,4 @@ public class SpriteSheet implements ISpriteSheet {
 	{
 		return maxSpriteCount;
 	}
-	
-	@Override
-	public void setInvisibleColor(final Color p_color)
-	{
-		
-	}
-
 }

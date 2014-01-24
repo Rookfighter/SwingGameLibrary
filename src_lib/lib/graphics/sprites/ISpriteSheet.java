@@ -1,6 +1,5 @@
 package lib.graphics.sprites;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.io.IOException;
 
@@ -23,5 +22,4 @@ public interface ISpriteSheet {
 					final Dimension2DI p_dimension,
 					final double p_radian,
 					final Graphics p_graphic);
-	void setInvisibleColor(final Color p_color);
 }
