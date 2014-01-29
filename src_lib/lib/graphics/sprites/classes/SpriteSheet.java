@@ -24,15 +24,9 @@ public class SpriteSheet implements ISpriteSheet {
 	private int spritesPerLine;
 	private int spritesPerColumn;
 	
-	private int currentIndex;
-	private Position2DI topLeft;
-	private Position2DI botRight;
-	
 	public SpriteSheet(final Dimension2DI p_spriteDimension, final String p_path)
 	{
 		spriteDimension = p_spriteDimension;
-		topLeft = new Position2DI();
-		botRight = new Position2DI();
 		setFilePath(p_path);
 	}
 	
@@ -98,12 +92,15 @@ public class SpriteSheet implements ISpriteSheet {
 	{
 		int destx1, destx2, desty1, desty2;
 		
-		getCornersOf(p_index);
+		Position2DI topLeft = getTopLeftOf(p_index);
+		Position2DI botRight = getBotRightOf(p_index);
 		
 		destx1 = (int) p_position.X();
 		destx2 = destx1 + (int) p_dimension.Width();
 		desty1 = (int) p_position.Y();
 		desty2 = desty1 + (int) p_dimension.Height();
+		
+		
 		
 		p_graphic.drawImage(spriteSheetImg,
 							destx1,desty1,
@@ -113,25 +110,18 @@ public class SpriteSheet implements ISpriteSheet {
 							null);
 	}
 	
-	private void getCornersOf(final int p_idx)
+	private Position2DI getBotRightOf(final int p_idx)
 	{
-		currentIndex = p_idx;
-		getTopLeft();
-		getBotRight();
+		Position2DI result = getTopLeftOf(p_idx);
+		result.set(result.X() + spriteDimension.Width(), result.Y() + spriteDimension.Height());
+		return result;
 	}
 	
-	private void getTopLeft()
+	private Position2DI getTopLeftOf(final int p_idx)
 	{
-		int x = (currentIndex % spritesPerLine) * spriteDimension.Width() ;
-		int y = (currentIndex / spritesPerLine) * spriteDimension.Height();
-		topLeft.set(x, y);
-	}
-	
-	private void getBotRight()
-	{
-		int x = topLeft.X() + spriteDimension.Width();
-		int y = topLeft.Y() + spriteDimension.Height();
-		botRight.set(x,y);
+		int x = (p_idx % spritesPerLine) * spriteDimension.Width() ;
+		int y = (p_idx / spritesPerLine) * spriteDimension.Height();
+		return new Position2DI(x,y);
 	}
 
 	@Override
