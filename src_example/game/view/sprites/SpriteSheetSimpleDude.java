@@ -9,7 +9,7 @@ private static final SpriteSheetSimpleDude simpleDudeSheet = new SpriteSheetSimp
 	
 	private SpriteSheetSimpleDude()
 	{
-		super(new Dimension2DI(32, 32), "images\\circles.png");
+		super(new Dimension2DI(32, 32), "images/circles.png");
 	}
 	
 	public static SpriteSheetSimpleDude getInstance()
